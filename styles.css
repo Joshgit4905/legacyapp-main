@@ -73,7 +73,7 @@ body {
 }
 
 .auth-card {
-  background: white;
+  background: linear-gradient(135deg, #FFFFFF 0%, #FAFAFA 100%);
   border: 1px solid var(--accents-2);
   border-radius: 16px;
   padding: 40px;
@@ -198,7 +198,7 @@ main#workspace {
   border-radius: 12px;
   padding: 32px;
   margin-bottom: 32px;
-  background: white;
+  background: linear-gradient(135deg, #FFFFFF 0%, #F9F9F9 100%);
   box-shadow: var(--shadow-md);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -240,11 +240,33 @@ label {
   transform: translateX(2px);
 }
 
+.input-icon-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 12px;
+  width: 16px;
+  height: 16px;
+  color: var(--accents-4);
+  pointer-events: none;
+  transition: color 0.2s;
+}
+
+.input-icon-wrapper:focus-within .input-icon {
+  color: var(--blue);
+}
+
 input,
 select,
 textarea {
   width: 100%;
   padding: 12px 16px;
+  padding-left: 40px;
+  /* Space for icon */
   border: 1px solid var(--accents-2);
   border-radius: 10px;
   font-size: 14px;
@@ -253,6 +275,11 @@ textarea {
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   outline: none;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+/* Textarea doesn't need left padding for icon usually, or needs adjustment */
+textarea {
+  padding-left: 16px;
 }
 
 input:hover,
