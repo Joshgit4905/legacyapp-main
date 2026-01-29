@@ -10,38 +10,37 @@
 </head>
 
 <body class="bg-slate-50 min-h-screen">
+    <!-- Floating Orbs Background -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
 
     <!-- Login Page -->
-    <div id="loginPage" class="min-h-screen flex items-center justify-center p-4 animate-fade-in">
+    <div id="loginPage" class="min-h-screen flex items-center justify-center p-4 fade-in">
         <div class="w-full max-w-md">
-            <div class="text-center mb-8 animate-scale-in">
-                <h1 class="text-4xl font-bold text-slate-900 mb-2">Task Manager</h1>
-                <p class="text-slate-500">Sistema moderno de gestión de tareas</p>
+            <div class="text-center mb-8 scale-in stagger-1">
+                <h1 class="text-5xl font-bold text-white mb-2 neon-text">Task Manager</h1>
+                <p class="text-slate-300 text-lg">Sistema moderno de gestión de tareas</p>
             </div>
 
-            <div class="bg-white rounded-2xl shadow-xl p-8 animate-slide-up">
-                <h2 class="text-2xl font-semibold text-slate-900 mb-6">Iniciar Sesión</h2>
+            <div class="glass-card p-8 scale-in stagger-2">
+                <h2 class="text-2xl font-semibold text-white mb-6">Iniciar Sesión</h2>
 
                 <div id="loginError"
                     class="hidden mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm"></div>
 
                 <form id="loginForm" class="space-y-4">
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-2">Usuario</label>
-                        <input type="text" id="loginUsername" value="admin"
-                            class="w-full px-4 py-3 border border-slate-200 rounded-lg input-glow focus:border-blue-500"
-                            required>
+                        <label class="block text-sm font-medium text-slate-300 mb-2">Usuario</label>
+                        <input type="text" id="loginUsername" value="admin" class="w-full" required>
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-2">Contraseña</label>
-                        <input type="password" id="loginPassword" value="admin"
-                            class="w-full px-4 py-3 border border-slate-200 rounded-lg input-glow focus:border-blue-500"
-                            required>
+                        <label class="block text-sm font-medium text-slate-300 mb-2">Contraseña</label>
+                        <input type="password" id="loginPassword" value="admin" class="w-full" required>
                     </div>
 
-                    <button type="submit"
-                        class="w-full bg-blue-500 text-white py-3 rounded-lg font-medium btn-hover hover:bg-blue-600">
+                    <button type="submit" class="w-full btn-gradient">
                         Entrar
                     </button>
                 </form>
@@ -52,24 +51,26 @@
     <!-- Main Dashboard -->
     <div id="dashboard" class="hidden min-h-screen">
         <!-- Header -->
-        <header class="bg-white border-b border-slate-200 sticky top-0 z-50 animate-slide-up">
+        <header class="bg-dark-glass border-b border-white border-opacity-10 sticky top-0 z-50 backdrop-blur-lg">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center h-16">
-                    <h1 class="text-2xl font-bold text-slate-900">Task Manager</h1>
+                    <h1 class="text-2xl font-bold neon-text">Task Manager</h1>
                     <div class="flex items-center gap-4">
                         <div class="relative">
-                            <button id="notificationBtn" class="p-2 text-slate-600 hover:text-blue-500 relative">
+                            <button id="notificationBtn" class="p-2 text-cyan-400 hover:text-cyan-300 relative">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
                                     </path>
                                 </svg>
                                 <span id="notificationBadge"
-                                    class="hidden absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full notification-badge"></span>
+                                    class="hidden absolute top-0 right-0 w-3 h-3 rounded-full notification-badge"></span>
                             </button>
                         </div>
-                        <span class="text-sm text-slate-600">👤 <strong id="currentUsername"></strong></span>
-                        <button id="logoutBtn" class="px-4 py-2 text-sm text-slate-600 hover:text-red-500">
+                        <span class="text-sm text-slate-300">👤 <strong id="currentUsername"
+                                class="text-white"></strong></span>
+                        <button id="logoutBtn"
+                            class="px-4 py-2 text-sm bg-red-500 bg-opacity-20 hover:bg-opacity-30 text-red-400 rounded-lg transition">
                             Salir
                         </button>
                     </div>
@@ -126,46 +127,43 @@
             <!-- Tasks Tab -->
             <div id="tasksTab" class="tab-content">
                 <!-- Stats Cards -->
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-                    <div class="bg-white rounded-xl p-6 shadow-sm card-hover stagger-item">
-                        <div class="text-sm text-slate-600 mb-1">Total</div>
-                        <div class="text-3xl font-bold text-slate-900" id="statTotal">0</div>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="stat-card stat-card-1 scroll-reveal stagger-1">
+                        <div class="text-sm text-cyan-400 mb-2 uppercase tracking-wide">Total</div>
+                        <div class="text-4xl font-bold text-white" id="statTotal">0</div>
                     </div>
-                    <div class="bg-white rounded-xl p-6 shadow-sm card-hover stagger-item">
-                        <div class="text-sm text-slate-600 mb-1">Completadas</div>
-                        <div class="text-3xl font-bold text-green-500" id="statCompleted">0</div>
+                    <div class="stat-card stat-card-2 scroll-reveal stagger-2">
+                        <div class="text-sm text-lime-400 mb-2 uppercase tracking-wide">Completadas</div>
+                        <div class="text-4xl font-bold text-white" id="statCompleted">0</div>
                     </div>
-                    <div class="bg-white rounded-xl p-6 shadow-sm card-hover stagger-item">
-                        <div class="text-sm text-slate-600 mb-1">Pendientes</div>
-                        <div class="text-3xl font-bold text-amber-500" id="statPending">0</div>
+                    <div class="stat-card stat-card-3 scroll-reveal stagger-3">
+                        <div class="text-sm text-orange-400 mb-2 uppercase tracking-wide">Pendientes</div>
+                        <div class="text-4xl font-bold text-white" id="statPending">0</div>
                     </div>
-                    <div class="bg-white rounded-xl p-6 shadow-sm card-hover stagger-item">
-                        <div class="text-sm text-slate-600 mb-1">Alta Prioridad</div>
-                        <div class="text-3xl font-bold text-red-500" id="statHighPriority">0</div>
+                    <div class="stat-card stat-card-4 scroll-reveal stagger-4">
+                        <div class="text-sm text-pink-400 mb-2 uppercase tracking-wide">Alta Prioridad</div>
+                        <div class="text-4xl font-bold text-white" id="statHighPriority">0</div>
                     </div>
                 </div>
 
                 <!-- Task Form -->
-                <div class="bg-white rounded-xl shadow-sm p-6 mb-8 stagger-item">
-                    <h2 class="text-xl font-semibold text-slate-900 mb-4">Nueva Tarea</h2>
+                <div class="glass-card p-6 mb-8 scroll-reveal">
+                    <h2 class="text-xl font-semibold text-white mb-4">Nueva Tarea</h2>
 
                     <form id="taskForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-slate-700 mb-2">Título</label>
-                            <input type="text" id="taskTitle"
-                                class="w-full px-4 py-2 border border-slate-200 rounded-lg input-glow" required>
+                            <label class="block text-sm font-medium text-slate-300 mb-2">Título</label>
+                            <input type="text" id="taskTitle" class="w-full" required>
                         </div>
 
                         <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-slate-700 mb-2">Descripción</label>
-                            <textarea id="taskDescription" rows="2"
-                                class="w-full px-4 py-2 border border-slate-200 rounded-lg input-glow"></textarea>
+                            <label class="block text-sm font-medium text-slate-300 mb-2">Descripción</label>
+                            <textarea id="taskDescription" rows="2" class="w-full"></textarea>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">Estado</label>
-                            <select id="taskStatus"
-                                class="w-full px-4 py-2 border border-slate-200 rounded-lg input-glow">
+                            <label class="block text-sm font-medium text-slate-300 mb-2">Estado</label>
+                            <select id="taskStatus" class="w-full">
                                 <option>Pendiente</option>
                                 <option>En Progreso</option>
                                 <option>Completada</option>
@@ -174,9 +172,8 @@
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">Prioridad</label>
-                            <select id="taskPriority"
-                                class="w-full px-4 py-2 border border-slate-200 rounded-lg input-glow">
+                            <label class="block text-sm font-medium text-slate-300 mb-2">Prioridad</label>
+                            <select id="taskPriority" class="w-full">
                                 <option>Baja</option>
                                 <option selected>Media</option>
                                 <option>Alta</option>
@@ -185,44 +182,36 @@
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">Proyecto</label>
-                            <select id="taskProject"
-                                class="w-full px-4 py-2 border border-slate-200 rounded-lg input-glow"></select>
+                            <label class="block text-sm font-medium text-slate-300 mb-2">Proyecto</label>
+                            <select id="taskProject" class="w-full"></select>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">Asignado a</label>
-                            <select id="taskAssigned"
-                                class="w-full px-4 py-2 border border-slate-200 rounded-lg input-glow"></select>
+                            <label class="block text-sm font-medium text-slate-300 mb-2">Asignado a</label>
+                            <select id="taskAssigned" class="w-full"></select>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">Fecha Vencimiento</label>
-                            <input type="date" id="taskDueDate"
-                                class="w-full px-4 py-2 border border-slate-200 rounded-lg input-glow">
+                            <label class="block text-sm font-medium text-slate-300 mb-2">Fecha Vencimiento</label>
+                            <input type="date" id="taskDueDate" class="w-full">
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">Horas Estimadas</label>
-                            <input type="number" id="taskHours" step="0.5"
-                                class="w-full px-4 py-2 border border-slate-200 rounded-lg input-glow">
+                            <label class="block text-sm font-medium text-slate-300 mb-2">Horas Estimadas</label>
+                            <input type="number" id="taskHours" step="0.5" class="w-full">
                         </div>
 
                         <div class="md:col-span-2 flex gap-2">
-                            <button type="submit"
-                                class="px-6 py-2 bg-blue-500 text-white rounded-lg btn-hover hover:bg-blue-600">
+                            <button type="submit" class="btn-gradient">
                                 Agregar Tarea
                             </button>
-                            <button type="button" id="updateTaskBtn"
-                                class="hidden px-6 py-2 bg-green-500 text-white rounded-lg btn-hover hover:bg-green-600">
+                            <button type="button" id="updateTaskBtn" class="hidden btn-success">
                                 Actualizar
                             </button>
-                            <button type="button" id="deleteTaskBtn"
-                                class="hidden px-6 py-2 bg-red-500 text-white rounded-lg btn-hover hover:bg-red-600">
+                            <button type="button" id="deleteTaskBtn" class="hidden btn-danger">
                                 Eliminar
                             </button>
-                            <button type="button" id="clearTaskBtn"
-                                class="px-6 py-2 bg-slate-200 text-slate-700 rounded-lg btn-hover hover:bg-slate-300">
+                            <button type="button" id="clearTaskBtn" class="btn-warning">
                                 Limpiar
                             </button>
                         </div>
@@ -230,28 +219,23 @@
                 </div>
 
                 <!-- Tasks List -->
-                <div class="bg-white rounded-xl shadow-sm overflow-hidden stagger-item">
-                    <div class="p-6 border-b border-slate-200">
-                        <h2 class="text-xl font-semibold text-slate-900">Lista de Tareas</h2>
+                <div class="glass-card overflow-hidden scroll-reveal">
+                    <div class="p-6 border-b border-white border-opacity-10">
+                        <h2 class="text-xl font-semibold text-white">Lista de Tareas</h2>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full">
-                            <thead class="bg-slate-50">
+                            <thead>
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">ID</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Título
-                                    </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Estado
-                                    </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">
-                                        Prioridad</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">
-                                        Proyecto</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">
-                                        Asignado</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase">ID</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase">Título</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase">Estado</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase">Prioridad</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase">Proyecto</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase">Asignado</th>
                                 </tr>
                             </thead>
-                            <tbody id="tasksTableBody" class="divide-y divide-slate-200">
+                            <tbody id="tasksTableBody" class="divide-y divide-slate-700 divide-opacity-30">
                                 <!-- Tasks will be inserted here -->
                             </tbody>
                         </table>
