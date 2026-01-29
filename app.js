@@ -1,5 +1,5 @@
 // API Configuration
-const API_URL = 'http://localhost:8000/api';
+const API_URL = '/api';
 let authToken = localStorage.getItem('authToken');
 let currentUser = null;
 let selectedTaskId = null;
