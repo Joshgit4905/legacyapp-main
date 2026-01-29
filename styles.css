@@ -95,12 +95,12 @@ aside {
   background: var(--bg);
   display: flex;
   flex-direction: column;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: sticky;
   top: 0;
   height: 100vh;
   z-index: 100;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 aside.collapsed {
@@ -155,18 +155,16 @@ aside.collapsed .sidebar-footer .flex-1 {
 
 aside.collapsed .nav-item {
   justify-content: center;
-  padding: 10px 0;
 }
 
 aside.collapsed .nav-item svg {
   margin-right: 0;
 }
 
-/* Sidebar Footer */
+/* User Profile in Sidebar */
 .sidebar-footer {
   padding: 12px;
   border-top: 1px solid var(--accents-2);
-  margin-top: auto;
 }
 
 /* Main Content */
@@ -508,17 +506,16 @@ select {
   }
 }
 
+/* Responsive */
 @media (max-width: 768px) {
   aside {
-    position: fixed;
-    left: -100%;
-    width: var(--sidebar-width) !important;
-    transition: left 0.3s ease;
-    box-shadow: 20px 0 50px rgba(0, 0, 0, 0.1);
+    width: 0;
+    border-right: none;
   }
 
   aside.active {
-    left: 0;
+    width: var(--sidebar-width);
+    border-right: 1px solid var(--accents-2);
   }
 
   .app-container {

@@ -139,21 +139,11 @@ function logout() {
 // Sidebar Management
 document.getElementById('sidebarToggle')?.addEventListener('click', () => {
     const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebarOverlay');
-
     if (window.innerWidth <= 768) {
         sidebar.classList.toggle('active');
-        overlay?.classList.toggle('hidden');
     } else {
         sidebar.classList.toggle('collapsed');
     }
-});
-
-document.getElementById('sidebarOverlay')?.addEventListener('click', () => {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebarOverlay');
-    sidebar.classList.remove('active');
-    overlay?.classList.add('hidden');
 });
 
 // Load Initial Data
