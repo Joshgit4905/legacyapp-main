@@ -100,7 +100,23 @@ aside {
   top: 0;
   height: 100vh;
   z-index: 100;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex-shrink: 0;
+}
+
+/* Custom Scrollbar for Sidebar */
+aside::-webkit-scrollbar {
+  width: 4px;
+}
+
+aside::-webkit-scrollbar-thumb {
+  background: var(--accents-2);
+  border-radius: 10px;
+}
+
+aside:hover::-webkit-scrollbar-thumb {
+  background: var(--accents-3);
 }
 
 aside.collapsed {
@@ -140,6 +156,13 @@ aside.collapsed {
 .nav-item:hover {
   background: var(--accents-1);
   color: var(--fg);
+}
+
+.nav-item svg {
+  width: 18px;
+  height: 18px;
+  margin-right: 12px;
+  flex-shrink: 0;
 }
 
 /* Collapsed States */
