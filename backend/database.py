@@ -15,6 +15,7 @@ async def connect_to_mongo():
     """Connect to MongoDB"""
     db.client = AsyncIOMotorClient(
         settings.mongodb_uri,
+        tls=True,
         tlsCAFile=certifi.where()
     )
     print("✅ Connected to MongoDB")
