@@ -511,7 +511,7 @@ document.getElementById('searchBtn')?.addEventListener('click', async () => {
 
     const filtered = allTasks.filter(task => {
         if (searchText && !task.title.toLowerCase().includes(searchText) &&
-            !task.description.toLowerCase().includes(searchText)) {
+            !(task.description && task.description.toLowerCase().includes(searchText))) {
             return false;
         }
         if (status && task.status !== status) {
