@@ -162,7 +162,7 @@
             <div class="content-inner">
                 <!-- Tasks Tab (Board View) -->
                 <div id="tasksTab" class="tab-content stagger-in">
-                    <div class="grid grid-cols-4 gap-4 mb-8" id="statsGrid">
+                    <div class="grid grid-cols-4 gap-4 mb-8 stats-grid" id="statsGrid">
                         <div class="section-card py-4 px-6">
                             <div class="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">Total</div>
                             <div id="statTotal" class="text-2xl font-bold">0</div>
@@ -368,17 +368,20 @@
                     </div>
                     <div class="section-card">
                         <div class="section-title">Proyectos Activos</div>
-                        <table class="w-full">
-                            <thead>
-                                <tr>
-                                    <th class="text-left text-[10px] text-gray-400 font-bold uppercase p-4">ID</th>
-                                    <th class="text-left text-[10px] text-gray-400 font-bold uppercase p-4">Nombre</th>
-                                    <th class="text-left text-[10px] text-gray-400 font-bold uppercase p-4">Detalles
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody id="projectsTableBody" class="divide-y divide-gray-50"></tbody>
-                        </table>
+                        <div class="table-container">
+                            <table class="w-full">
+                                <thead>
+                                    <tr>
+                                        <th class="text-left text-[10px] text-gray-400 font-bold uppercase p-4">ID</th>
+                                        <th class="text-left text-[10px] text-gray-400 font-bold uppercase p-4">Nombre
+                                        </th>
+                                        <th class="text-left text-[10px] text-gray-400 font-bold uppercase p-4">Detalles
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="projectsTableBody" class="divide-y divide-gray-50"></tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
@@ -432,7 +435,11 @@
                     </div>
                     <div class="section-card">
                         <div class="section-title">Resultados</div>
-                        <tbody id="searchTableBody"></tbody>
+                        <div class="table-container">
+                            <table class="w-full">
+                                <tbody id="searchTableBody"></tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 

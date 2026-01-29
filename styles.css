@@ -86,6 +86,7 @@ body {
 .app-container {
   display: flex;
   min-height: 100vh;
+  width: 100%;
 }
 
 /* Sidebar */
@@ -221,8 +222,8 @@ main#workspace {
 .section-card {
   border: 1px solid var(--accents-2);
   border-radius: 12px;
-  padding: 32px;
-  margin-bottom: 32px;
+  padding: 24px;
+  margin-bottom: 24px;
   background: linear-gradient(135deg, #FFFFFF 0%, #F9F9F9 100%);
   box-shadow: var(--shadow-md);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -501,6 +502,17 @@ select {
   }
 }
 
+/* Table Responsiveness Utility */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+table {
+  min-width: 600px;
+}
+
 /* Animations */
 .stagger-in>* {
   opacity: 0;
@@ -534,11 +546,15 @@ select {
   aside {
     width: 0;
     border-right: none;
+    position: fixed;
+    left: 0;
+    z-index: 200;
   }
 
   aside.active {
     width: var(--sidebar-width);
     border-right: 1px solid var(--accents-2);
+    box-shadow: 20px 0 50px rgba(0, 0, 0, 0.1);
   }
 
   .app-container {
@@ -547,6 +563,7 @@ select {
 
   #workspace {
     width: 100%;
+    overflow-x: hidden;
   }
 
   .header-bar {
@@ -557,15 +574,23 @@ select {
     padding: 16px;
   }
 
+  /* Grid Adjustments */
   .grid-cols-4,
   .grid-cols-3,
   .grid-cols-2 {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
   }
 
+  .col-span-2,
+  .col-span-3 {
+    grid-column: span 1 / span 1 !important;
+  }
+
+  /* Board Responsiveness */
   .board {
     flex-direction: column;
-    overflow-x: visible;
+    padding-bottom: 0;
   }
 
   .board-column {
