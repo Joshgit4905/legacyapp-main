@@ -583,6 +583,207 @@ function exportCSV() {
     showSuccess('Exportado a export_tasks.csv');
 }
 
+// Comments Management
+document.getElementById('submitCommentBtn')?.addEventListener('click', async () => {
+    const taskId = parseInt(document.getElementById('commentTaskId').value);
+    const commentText = document.getElementById('commentText').value;
+
+    if (!taskId || !commentText) {
+        showError('Por favor ingresa el ID de la tarea y el comentario');
+        return;
+    }
+
+    showLoading();
+
+    try {
+        await apiRequest('/comments', {
+            method: 'POST',
+            body: JSON.stringify({
+                task_id: taskId,
+                comment_text: commentText
+            })
+        });
+
+        showSuccess('Comentario agregado exitosamente');
+        document.getElementById('commentText').value = '';
+
+        // Load comments automatically
+        await loadComments(taskId);
+    } catch (error) {
+        hideLoading();
+        showError('Error al agregar comentario: ' + error.message);
+    }
+});
+
+document.getElementById('loadCommentsBtn')?.addEventListener('click', async () => {
+    const taskId = parseInt(document.getElementById('commentTaskId').value);
+
+    if (!taskId) {
+        showError('Por favor ingresa el ID de la tarea');
+        return;
+    }
+
+    await loadComments(taskId);
+});
+
+async function loadComments(taskId) {
+    showLoading();
+
+    try {
+        const comments = await apiRequest(`/comments/${taskId}`);
+
+        const commentsArea = document.getElementById('commentsArea');
+
+        if (comments.length === 0) {
+            commentsArea.textContent = 'No hay comentarios para esta tarea.';
+        } else {
+            let text = '';
+            comments.forEach(comment => {
+                const user = allUsers.find(u => u.id === comment.user_id);
+                text += `Comentario #${comment.id}\n`;
+                text += `Usuario: ${user ? user.username : 'Desconocido'}\n`;
+                text += `Fecha: ${comment.created_at}\n`;
+                text += `Contenido: ${comment.comment_text}\n`;
+                text += '---\n\n';
+            });
+            commentsArea.textContent = text;
+        }
+
+        hideLoading();
+    } catch (error) {
+        hideLoading();
+        showError('Error al cargar comentarios: ' + error.message);
+    }
+}
+
+// History Management
+document.getElementById('loadTaskHistoryBtn')?.addEventListener('click', async () => {
+    const taskId = parseInt(document.getElementById('historyTaskId').value);
+
+    if (!taskId) {
+        showError('Por favor ingresa el ID de la tarea');
+        return;
+    }
+
+    showLoading();
+
+    try {
+        const history = await apiRequest(`/history/${taskId}`);
+
+        const historyArea = document.getElementById('historyArea');
+
+        if (history.length === 0) {
+            historyArea.textContent = 'No hay historial para esta tarea.';
+        } else {
+            let text = `=== HISTORIAL DE TAREA #${taskId} ===\n\n`;
+            history.forEach(item => {
+                const user = allUsers.find(u => u.id === item.user_id);
+                text += `Tarea #${item.task_id} - ${item.action} - ${item.timestamp}\n`;
+                text += `  Usuario: ${user ? user.username : 'Desconocido'}\n`;
+                text += `  Antes: ${item.old_value || '(vacío)'}\n`;
+                text += `  Después: ${item.new_value}\n`;
+                text += '---\n';
+            });
+            historyArea.textContent = text;
+        }
+
+        hideLoading();
+    } catch (error) {
+        hideLoading();
+        showError('Error al cargar historial: ' + error.message);
+    }
+});
+
+document.getElementById('loadAllHistoryBtn')?.addEventListener('click', async () => {
+    showLoading();
+
+    try {
+        const history = await apiRequest('/history');
+
+        const historyArea = document.getElementById('historyArea');
+
+        if (history.length === 0) {
+            historyArea.textContent = 'No hay historial disponible.';
+        } else {
+            let text = '=== HISTORIAL COMPLETO ===\n\n';
+            history.forEach(item => {
+                const user = allUsers.find(u => u.id === item.user_id);
+                text += `Tarea #${item.task_id} - ${item.action} - ${item.timestamp}\n`;
+                text += `  Usuario: ${user ? user.username : 'Desconocido'}\n`;
+                text += `  Antes: ${item.old_value || '(vacío)'}\n`;
+                text += `  Después: ${item.new_value}\n`;
+                text += '---\n';
+            });
+            historyArea.textContent = text;
+        }
+
+        hideLoading();
+    } catch (error) {
+        hideLoading();
+        showError('Error al cargar historial: ' + error.message);
+    }
+});
+
+// Notifications Management
+document.getElementById('loadNotificationsBtn')?.addEventListener('click', async () => {
+    await loadNotifications();
+});
+
+document.getElementById('markNotificationsReadBtn')?.addEventListener('click', async () => {
+    showLoading();
+
+    try {
+        await apiRequest('/notifications/read', {
+            method: 'PUT'
+        });
+
+        showSuccess('Notificaciones marcadas como leídas');
+
+        // Reload notifications
+        await loadNotifications();
+    } catch (error) {
+        hideLoading();
+        showError('Error al marcar notificaciones: ' + error.message);
+    }
+});
+
+async function loadNotifications() {
+    showLoading();
+
+    try {
+        const notifications = await apiRequest('/notifications');
+
+        const notificationsArea = document.getElementById('notificationsArea');
+
+        if (notifications.length === 0) {
+            notificationsArea.innerHTML = '<p class="text-slate-500">No hay notificaciones.</p>';
+        } else {
+            let html = '';
+            notifications.forEach(notification => {
+                const bgColor = notification.read ? 'bg-slate-100' : 'bg-blue-50';
+                const borderColor = notification.read ? 'border-slate-200' : 'border-blue-200';
+                html += `<div class="p-4 mb-2 ${bgColor} border ${borderColor} rounded-lg">`;
+                html += `<div class="flex justify-between items-start">`;
+                html += `<div>`;
+                html += `<p class="font-medium text-slate-900">${notification.message}</p>`;
+                html += `<p class="text-xs text-slate-500 mt-1">${notification.created_at}</p>`;
+                html += `</div>`;
+                if (!notification.read) {
+                    html += `<span class="px-2 py-1 bg-blue-500 text-white text-xs rounded-full">Nueva</span>`;
+                }
+                html += `</div>`;
+                html += `</div>`;
+            });
+            notificationsArea.innerHTML = html;
+        }
+
+        hideLoading();
+    } catch (error) {
+        hideLoading();
+        showError('Error al cargar notificaciones: ' + error.message);
+    }
+}
+
 // Check if already logged in
 if (authToken) {
     document.getElementById('loginPage').classList.add('hidden');
