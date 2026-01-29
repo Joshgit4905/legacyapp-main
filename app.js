@@ -98,8 +98,10 @@ document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
     } catch (error) {
         hideLoading();
         const errorDiv = document.getElementById('loginError');
-        errorDiv.textContent = error.message;
-        errorDiv.classList.remove('hidden');
+        if (errorDiv) {
+            errorDiv.textContent = error.message;
+            errorDiv.classList.remove('hidden');
+        }
     }
 });
 
@@ -113,6 +115,12 @@ function logout() {
     document.getElementById('dashboard').classList.add('hidden');
     document.getElementById('loginPage').classList.remove('hidden');
 }
+
+// Sidebar Management
+document.getElementById('sidebarToggle')?.addEventListener('click', () => {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('collapsed');
+});
 
 // Load Initial Data
 async function loadInitialData() {
@@ -134,8 +142,8 @@ async function loadInitialData() {
         populateProjectsDropdown();
         populateUsersDropdown();
 
-        // Load tasks table
-        loadTasksTable();
+        // Load tasks board
+        loadTasksBoard();
         updateStats();
 
         hideLoading();
@@ -230,12 +238,27 @@ async function updateTask() {
             body: JSON.stringify(taskData)
         });
 
+        if (taskData.status === 'Completada') {
+            triggerConfetti();
+        }
+
         showSuccess('Tarea actualizada exitosamente');
         clearTaskForm();
         await loadInitialData();
     } catch (error) {
         hideLoading();
         showError('Error updating task: ' + error.message);
+    }
+}
+
+function triggerConfetti() {
+    if (typeof confetti === 'function') {
+        confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#2563EB', '#10B981', '#FFFFFF']
+        });
     }
 }
 
@@ -291,47 +314,107 @@ function selectTask(task) {
     document.getElementById('taskForm').scrollIntoView({ behavior: 'smooth' });
 }
 
-function loadTasksTable() {
-    const tbody = document.getElementById('tasksTableBody');
-    tbody.innerHTML = '';
+function loadTasksBoard() {
+    const board = document.getElementById('tasksBoard');
+    if (!board) return;
+
+    // Clear all columns
+    const columns = board.querySelectorAll('.column-tasks');
+    columns.forEach(col => col.innerHTML = '');
 
     allTasks.forEach(task => {
         const project = allProjects.find(p => p.id === task.project_id);
-        const user = allUsers.find(u => u.id === task.assigned_to);
+        const col = board.querySelector(`.board-column[data-status="${task.status}"] .column-tasks`);
 
-        const row = document.createElement('tr');
-        row.className = 'hover:bg-slate-50 cursor-pointer transition-colors';
-        row.onclick = () => selectTask(task);
+        if (!col) return;
 
-        const priorityColors = {
-            'Baja': 'text-green-600',
-            'Media': 'text-blue-600',
-            'Alta': 'text-amber-600',
-            'Crítica': 'text-red-600'
+        const card = document.createElement('div');
+        card.className = 'task-card stagger-in';
+        card.draggable = true;
+        card.dataset.taskId = task.id;
+
+        card.onclick = () => selectTask(task);
+
+        card.ondragstart = (e) => {
+            e.dataTransfer.setData('text/plain', task.id);
+            setTimeout(() => card.classList.add('dragging'), 0);
+        };
+        card.ondragend = () => card.classList.remove('dragging');
+
+        const priorityBadges = {
+            'Baja': 'badge-low',
+            'Media': 'badge-media',
+            'Alta': 'badge-alta',
+            'Crítica': 'badge-alta'
         };
 
-        const statusColors = {
-            'Pendiente': 'bg-slate-100 text-slate-700',
-            'En Progreso': 'bg-blue-100 text-blue-700',
-            'Completada': 'bg-green-100 text-green-700',
-            'Bloqueada': 'bg-red-100 text-red-700'
-        };
-
-        row.innerHTML = `
-            <td class="px-6 py-4 text-sm text-slate-900">${task.id}</td>
-            <td class="px-6 py-4 text-sm font-medium text-slate-900">${task.title}</td>
-            <td class="px-6 py-4">
-                <span class="px-2 py-1 text-xs font-medium rounded-full ${statusColors[task.status] || 'bg-slate-100 text-slate-700'}">
-                    ${task.status}
-                </span>
-            </td>
-            <td class="px-6 py-4 text-sm font-medium ${priorityColors[task.priority] || 'text-slate-600'}">${task.priority}</td>
-            <td class="px-6 py-4 text-sm text-slate-600">${project ? project.name : 'Sin proyecto'}</td>
-            <td class="px-6 py-4 text-sm text-slate-600">${user ? user.username : 'Sin asignar'}</td>
+        card.innerHTML = `
+            <div class="task-title">${task.title}</div>
+            <div class="task-meta">
+                <span class="badge ${priorityBadges[task.priority] || 'badge-low'}">#${task.id}</span>
+                <span>${project ? project.name : 'No project'}</span>
+            </div>
         `;
 
-        tbody.appendChild(row);
+        col.appendChild(card);
     });
+
+    // Update counts and setup drop logic
+    board.querySelectorAll('.board-column').forEach(col => {
+        const status = col.dataset.status;
+        const count = allTasks.filter(t => t.status === status).length;
+        const countEl = col.querySelector('.count');
+        if (countEl) countEl.textContent = count;
+
+        col.ondragover = (e) => {
+            e.preventDefault();
+            col.classList.add('drop-target');
+        };
+        col.ondragleave = () => col.classList.remove('drop-target');
+        col.ondrop = async (e) => {
+            e.preventDefault();
+            col.classList.remove('drop-target');
+            const taskId = parseInt(e.dataTransfer.getData('text/plain'));
+            const newStatus = col.dataset.status;
+
+            const task = allTasks.find(t => t.id === taskId);
+            if (task && task.status !== newStatus) {
+                await updateTaskStatus(taskId, newStatus);
+            }
+        };
+    });
+}
+
+async function updateTaskStatus(taskId, newStatus) {
+    const task = allTasks.find(t => t.id === taskId);
+    if (!task) return;
+
+    const taskData = {
+        title: task.title,
+        description: task.description,
+        status: newStatus,
+        priority: task.priority,
+        project_id: task.project_id,
+        assigned_to: task.assigned_to,
+        due_date: task.due_date,
+        estimated_hours: task.estimated_hours
+    };
+
+    showLoading();
+    try {
+        await apiRequest(`/tasks/${taskId}`, {
+            method: 'PUT',
+            body: JSON.stringify(taskData)
+        });
+
+        if (newStatus === 'Completada') triggerConfetti();
+
+        showSuccess(`Estado actualizado a ${newStatus}`);
+        await loadInitialData();
+    } catch (error) {
+        hideLoading();
+        showError('Error updating status: ' + error.message);
+    }
 }
 
 function updateStats() {
@@ -477,24 +560,35 @@ function selectProject(project) {
     document.getElementById('deleteProjectBtn').classList.remove('hidden');
 }
 
-// Tab Navigation
-document.querySelectorAll('.tab-btn').forEach(btn => {
+// Tab Navigation (Sidebar version)
+document.querySelectorAll('.nav-item').forEach(btn => {
     btn.addEventListener('click', () => {
         const tabName = btn.dataset.tab;
+        if (!tabName) return;
 
-        // Update active tab button
-        document.querySelectorAll('.tab-btn').forEach(b => {
-            b.classList.remove('active', 'border-blue-500', 'text-blue-600');
-            b.classList.add('border-transparent', 'text-slate-600');
-        });
-        btn.classList.add('active', 'border-blue-500', 'text-blue-600');
-        btn.classList.remove('border-transparent', 'text-slate-600');
+        // Update active sidebar item
+        document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
 
         // Show active tab content
         document.querySelectorAll('.tab-content').forEach(content => {
             content.classList.add('hidden');
         });
-        document.getElementById(tabName + 'Tab').classList.remove('hidden');
+        const activeTab = document.getElementById(tabName + 'Tab');
+        if (activeTab) {
+            activeTab.classList.remove('hidden');
+            // Update title in header
+            const titleMap = {
+                'tasks': 'Tus Tareas',
+                'projects': 'Proyectos Disponibles',
+                'search': 'Búsqueda Inteligente',
+                'reports': 'Reportes y Datos',
+                'comments': 'Comunidad y Feedback',
+                'history': 'Trazabilidad de cambios',
+                'notifications': 'Centro de Notificaciones'
+            };
+            document.getElementById('viewTitle').textContent = titleMap[tabName] || tabName;
+        }
 
         // Load data for specific tabs
         if (tabName === 'projects') {

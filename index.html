@@ -4,498 +4,402 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Manager - Modern</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Task Manager — World Class</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 
-<body class="bg-slate-50 min-h-screen">
-    <!-- Floating Orbs Background -->
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
-
-    <!-- Login Page -->
-    <div id="loginPage" class="min-h-screen flex items-center justify-center p-4 fade-in">
-        <div class="w-full max-w-md">
-            <div class="text-center mb-8 scale-in stagger-1">
-                <h1 class="text-5xl font-bold text-white mb-2 neon-text">Task Manager</h1>
-                <p class="text-slate-300 text-lg">Sistema moderno de gestión de tareas</p>
+<body>
+    <!-- Auth Pages -->
+    <div id="loginPage" class="min-h-screen flex items-center justify-center p-4">
+        <div class="auth-card stagger-in">
+            <div class="text-center mb-10">
+                <svg class="w-12 h-12 mx-auto mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                </svg>
+                <h1 class="text-2xl font-bold tracking-tight">Bienvenido</h1>
+                <p class="text-gray-500 text-sm mt-1">Gestiona tus tareas con elegancia</p>
             </div>
 
-            <div class="glass-card p-8 scale-in stagger-2">
-                <h2 class="text-2xl font-semibold text-white mb-6">Iniciar Sesión</h2>
-
-                <div id="loginError"
-                    class="hidden mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm"></div>
-
-                <form id="loginForm" class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-300 mb-2">Usuario</label>
-                        <input type="text" id="loginUsername" value="admin" class="w-full" required>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-slate-300 mb-2">Contraseña</label>
-                        <input type="password" id="loginPassword" value="admin" class="w-full" required>
-                    </div>
-
-                    <button type="submit" class="w-full btn-gradient">
-                        Entrar
-                    </button>
-                </form>
-            </div>
+            <form id="loginForm" class="space-y-4">
+                <div id="loginError" class="hidden text-red-500 text-xs mb-4"></div>
+                <div class="form-group">
+                    <label>Usuario</label>
+                    <input type="text" id="loginUsername" placeholder="admin" required>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-full mt-6">Iniciar sesión</button>
+            </form>
         </div>
     </div>
 
-    <!-- Main Dashboard -->
-    <div id="dashboard" class="hidden min-h-screen">
-        <!-- Header -->
-        <header class="bg-dark-glass border-b border-white border-opacity-10 sticky top-0 z-50 backdrop-blur-lg">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between items-center h-16">
-                    <h1 class="text-2xl font-bold neon-text">Task Manager</h1>
-                    <div class="flex items-center gap-4">
-                        <div class="relative">
-                            <button id="notificationBtn" class="p-2 text-cyan-400 hover:text-cyan-300 relative">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
-                                    </path>
-                                </svg>
-                                <span id="notificationBadge"
-                                    class="hidden absolute top-0 right-0 w-3 h-3 rounded-full notification-badge"></span>
-                            </button>
-                        </div>
-                        <span class="text-sm text-slate-300">👤 <strong id="currentUsername"
-                                class="text-white"></strong></span>
-                        <button id="logoutBtn"
-                            class="px-4 py-2 text-sm bg-red-500 bg-opacity-20 hover:bg-opacity-30 text-red-400 rounded-lg transition">
-                            Salir
-                        </button>
-                    </div>
+    <!-- Main App Container -->
+    <div id="dashboard" class="hidden app-container">
+        <!-- Collapsible Sidebar -->
+        <aside id="sidebar">
+            <div class="sidebar-header">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 bg-black rounded flex items-center justify-center text-white font-bold">T</div>
+                    <span class="font-semibold text-sm tracking-tight">Task Manager</span>
                 </div>
             </div>
-        </header>
 
-        <!-- Navigation Tabs -->
-        <nav class="bg-white border-b border-slate-200 animate-slide-up" style="animation-delay: 0.1s;">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex gap-1 overflow-x-auto">
-                    <button
-                        class="tab-btn active px-6 py-3 text-sm font-medium border-b-2 border-blue-500 text-blue-600"
-                        data-tab="tasks">
-                        Tareas
-                    </button>
-                    <button
-                        class="tab-btn px-6 py-3 text-sm font-medium border-b-2 border-transparent text-slate-600 hover:text-slate-900"
-                        data-tab="projects">
-                        Proyectos
-                    </button>
-                    <button
-                        class="tab-btn px-6 py-3 text-sm font-medium border-b-2 border-transparent text-slate-600 hover:text-slate-900"
-                        data-tab="search">
-                        Búsqueda
-                    </button>
-                    <button
-                        class="tab-btn px-6 py-3 text-sm font-medium border-b-2 border-transparent text-slate-600 hover:text-slate-900"
-                        data-tab="reports">
-                        Reportes
-                    </button>
-                    <button
-                        class="tab-btn px-6 py-3 text-sm font-medium border-b-2 border-transparent text-slate-600 hover:text-slate-900"
-                        data-tab="comments">
-                        Comentarios
-                    </button>
-                    <button
-                        class="tab-btn px-6 py-3 text-sm font-medium border-b-2 border-transparent text-slate-600 hover:text-slate-900"
-                        data-tab="history">
-                        Historial
-                    </button>
-                    <button
-                        class="tab-btn px-6 py-3 text-sm font-medium border-b-2 border-transparent text-slate-600 hover:text-slate-900"
-                        data-tab="notifications">
-                        Notificaciones
-                    </button>
+            <nav class="sidebar-nav">
+                <div class="nav-item active" data-tab="tasks">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4">
+                        </path>
+                    </svg>
+                    <span>Tareas</span>
                 </div>
+                <div class="nav-item" data-tab="projects">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                        </path>
+                    </svg>
+                    <span>Proyectos</span>
+                </div>
+                <div class="nav-item" data-tab="search">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <span>Búsqueda</span>
+                </div>
+                <div class="nav-item" data-tab="reports">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                        </path>
+                    </svg>
+                    <span>Reportes</span>
+                </div>
+                <div class="nav-item" data-tab="comments">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z">
+                        </path>
+                    </svg>
+                    <span>Comentarios</span>
+                </div>
+                <div class="nav-item" data-tab="history">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span>Historial</span>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="flex items-center gap-3 px-2 py-1">
+                    <div
+                        class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs font-semibold">
+                        AD</div>
+                    <div class="flex-1">
+                        <div id="currentUsername" class="text-xs font-semibold">admin</div>
+                        <div class="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Administrator</div>
+                    </div>
+                </div>
+                <button id="logoutBtn" class="nav-item w-full mt-4 border-none bg-transparent">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                        </path>
+                    </svg>
+                    <span>Cerrar Sesión</span>
+                </button>
             </div>
-        </nav>
+        </aside>
 
-        <!-- Main Content -->
-        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Main Workspace -->
+        <main id="workspace">
+            <header class="header-bar">
+                <div class="flex items-center gap-4">
+                    <button id="sidebarToggle" class="p-1 hover:bg-gray-100 rounded">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <h2 id="viewTitle" class="text-sm font-semibold">Tus Tareas</h2>
+                </div>
 
-            <!-- Tasks Tab -->
-            <div id="tasksTab" class="tab-content">
-                <!-- Stats Cards -->
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                    <div class="stat-card stat-card-1 scroll-reveal stagger-1">
-                        <div class="text-sm text-cyan-400 mb-2 uppercase tracking-wide">Total</div>
-                        <div class="text-4xl font-bold text-white" id="statTotal">0</div>
+                <div class="flex items-center gap-4">
+                    <button id="notificationBtn" class="relative hover:bg-gray-100 p-2 rounded-full transition-colors">
+                        <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
+                            </path>
+                        </svg>
+                        <span id="notificationBadge"
+                            class="hidden absolute top-2 right-2 w-2 h-2 bg-blue-500 rounded-full"></span>
+                    </button>
+                </div>
+            </header>
+
+            <div class="content-inner">
+                <!-- Tasks Tab (Board View) -->
+                <div id="tasksTab" class="tab-content stagger-in">
+                    <div class="grid grid-cols-4 gap-4 mb-8" id="statsGrid">
+                        <div class="section-card py-4 px-6">
+                            <div class="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">Total</div>
+                            <div id="statTotal" class="text-2xl font-bold">0</div>
+                        </div>
+                        <div class="section-card py-4 px-6">
+                            <div class="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">Cerradas
+                            </div>
+                            <div id="statCompleted" class="text-2xl font-bold text-green-600">0</div>
+                        </div>
+                        <div class="section-card py-4 px-6">
+                            <div class="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">Abiertas
+                            </div>
+                            <div id="statPending" class="text-2xl font-bold text-amber-600">0</div>
+                        </div>
+                        <div class="section-card py-4 px-6">
+                            <div class="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-1">Críticas
+                            </div>
+                            <div id="statHighPriority" class="text-2xl font-bold text-red-600">0</div>
+                        </div>
                     </div>
-                    <div class="stat-card stat-card-2 scroll-reveal stagger-2">
-                        <div class="text-sm text-lime-400 mb-2 uppercase tracking-wide">Completadas</div>
-                        <div class="text-4xl font-bold text-white" id="statCompleted">0</div>
+
+                    <div class="section-card">
+                        <div class="section-title">
+                            <span>Nueva Tarea</span>
+                            <button id="clearTaskBtn"
+                                class="text-xs text-gray-400 hover:text-black uppercase font-bold tracking-widest">Limpiar
+                                datos</button>
+                        </div>
+                        <form id="taskForm" class="grid grid-cols-2 gap-4">
+                            <div class="col-span-2">
+                                <label>Título de la tarea</label>
+                                <input type="text" id="taskTitle" placeholder="Nombre descriptivo..." required>
+                            </div>
+                            <div class="col-span-2">
+                                <label>Descripción (Opcional)</label>
+                                <textarea id="taskDescription" rows="2"
+                                    placeholder="Detalles adicionales..."></textarea>
+                            </div>
+                            <div>
+                                <label>Prioridad</label>
+                                <select id="taskPriority">
+                                    <option>Baja</option>
+                                    <option selected>Media</option>
+                                    <option>Alta</option>
+                                    <option>Crítica</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Estado</label>
+                                <select id="taskStatus">
+                                    <option>Pendiente</option>
+                                    <option>En Progreso</option>
+                                    <option>Completada</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Proyecto</label>
+                                <select id="taskProject"></select>
+                            </div>
+                            <div>
+                                <label>Asignado</label>
+                                <select id="taskAssigned"></select>
+                            </div>
+                            <div class="col-span-2 flex gap-3 pt-2">
+                                <button type="submit" class="btn btn-primary">Crear Tarea</button>
+                                <button type="button" id="updateTaskBtn" class="hidden btn btn-secondary">Guardar
+                                    Cambios</button>
+                                <button type="button" id="deleteTaskBtn"
+                                    class="hidden text-red-500 text-sm hover:underline ml-auto">Eliminar Tarea</button>
+                            </div>
+                        </form>
                     </div>
-                    <div class="stat-card stat-card-3 scroll-reveal stagger-3">
-                        <div class="text-sm text-orange-400 mb-2 uppercase tracking-wide">Pendientes</div>
-                        <div class="text-4xl font-bold text-white" id="statPending">0</div>
-                    </div>
-                    <div class="stat-card stat-card-4 scroll-reveal stagger-4">
-                        <div class="text-sm text-pink-400 mb-2 uppercase tracking-wide">Alta Prioridad</div>
-                        <div class="text-4xl font-bold text-white" id="statHighPriority">0</div>
+
+                    <!-- Drag and Drop Board Inspired Layout (or keeps table if preferred, but board is more Linear style) -->
+                    <!-- Kanban Board View -->
+                    <div class="board" id="tasksBoard">
+                        <div class="board-column" data-status="Pendiente">
+                            <div class="column-header">
+                                <span>Pendiente</span>
+                                <span class="count">0</span>
+                            </div>
+                            <div class="column-tasks"></div>
+                        </div>
+                        <div class="board-column" data-status="En Progreso">
+                            <div class="column-header">
+                                <span>En Progreso</span>
+                                <span class="count">0</span>
+                            </div>
+                            <div class="column-tasks"></div>
+                        </div>
+                        <div class="board-column" data-status="Completada">
+                            <div class="column-header">
+                                <span>Completada</span>
+                                <span class="count">0</span>
+                            </div>
+                            <div class="column-tasks"></div>
+                        </div>
+                        <div class="board-column" data-status="Bloqueada">
+                            <div class="column-header">
+                                <span>Bloqueada</span>
+                                <span class="count">0</span>
+                            </div>
+                            <div class="column-tasks"></div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Task Form -->
-                <div class="glass-card p-6 mb-8 scroll-reveal">
-                    <h2 class="text-xl font-semibold text-white mb-4">Nueva Tarea</h2>
-
-                    <form id="taskForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-slate-300 mb-2">Título</label>
-                            <input type="text" id="taskTitle" class="w-full" required>
-                        </div>
-
-                        <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-slate-300 mb-2">Descripción</label>
-                            <textarea id="taskDescription" rows="2" class="w-full"></textarea>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-slate-300 mb-2">Estado</label>
-                            <select id="taskStatus" class="w-full">
-                                <option>Pendiente</option>
-                                <option>En Progreso</option>
-                                <option>Completada</option>
-                                <option>Bloqueada</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-slate-300 mb-2">Prioridad</label>
-                            <select id="taskPriority" class="w-full">
-                                <option>Baja</option>
-                                <option selected>Media</option>
-                                <option>Alta</option>
-                                <option>Crítica</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-slate-300 mb-2">Proyecto</label>
-                            <select id="taskProject" class="w-full"></select>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-slate-300 mb-2">Asignado a</label>
-                            <select id="taskAssigned" class="w-full"></select>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-slate-300 mb-2">Fecha Vencimiento</label>
-                            <input type="date" id="taskDueDate" class="w-full">
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-slate-300 mb-2">Horas Estimadas</label>
-                            <input type="number" id="taskHours" step="0.5" class="w-full">
-                        </div>
-
-                        <div class="md:col-span-2 flex gap-2">
-                            <button type="submit" class="btn-gradient">
-                                Agregar Tarea
-                            </button>
-                            <button type="button" id="updateTaskBtn" class="hidden btn-success">
-                                Actualizar
-                            </button>
-                            <button type="button" id="deleteTaskBtn" class="hidden btn-danger">
-                                Eliminar
-                            </button>
-                            <button type="button" id="clearTaskBtn" class="btn-warning">
-                                Limpiar
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- Tasks List -->
-                <div class="glass-card overflow-hidden scroll-reveal">
-                    <div class="p-6 border-b border-white border-opacity-10">
-                        <h2 class="text-xl font-semibold text-white">Lista de Tareas</h2>
+                <!-- Projects Tab -->
+                <div id="projectsTab" class="tab-content hidden stagger-in">
+                    <div class="section-card">
+                        <div class="section-title">Gestionar Proyectos</div>
+                        <form id="projectForm" class="space-y-4">
+                            <div>
+                                <label>Nombre del Proyecto</label>
+                                <input type="text" id="projectName" required>
+                            </div>
+                            <div>
+                                <label>Descripción corto (Opcional)</label>
+                                <textarea id="projectDescription" rows="2"></textarea>
+                            </div>
+                            <div class="flex gap-2">
+                                <button type="submit" class="btn btn-primary">Añadir Proyecto</button>
+                                <button type="button" id="updateProjectBtn"
+                                    class="hidden btn btn-secondary">Actualizar</button>
+                                <button type="button" id="deleteProjectBtn"
+                                    class="hidden text-red-500">Eliminar</button>
+                            </div>
+                        </form>
                     </div>
-                    <div class="overflow-x-auto">
+                    <div class="section-card">
+                        <div class="section-title">Proyectos Activos</div>
                         <table class="w-full">
                             <thead>
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase">ID</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase">Título</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase">Estado</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase">Prioridad</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase">Proyecto</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase">Asignado</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tasksTableBody" class="divide-y divide-slate-700 divide-opacity-30">
-                                <!-- Tasks will be inserted here -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Projects Tab -->
-            <div id="projectsTab" class="tab-content hidden">
-                <div class="bg-white rounded-xl shadow-sm p-6 mb-8">
-                    <h2 class="text-xl font-semibold text-slate-900 mb-4">Nuevo Proyecto</h2>
-
-                    <form id="projectForm" class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">Nombre</label>
-                            <input type="text" id="projectName"
-                                class="w-full px-4 py-2 border border-slate-200 rounded-lg input-glow" required>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">Descripción</label>
-                            <textarea id="projectDescription" rows="3"
-                                class="w-full px-4 py-2 border border-slate-200 rounded-lg input-glow"></textarea>
-                        </div>
-
-                        <div class="flex gap-2">
-                            <button type="submit"
-                                class="px-6 py-2 bg-blue-500 text-white rounded-lg btn-hover hover:bg-blue-600">
-                                Agregar Proyecto
-                            </button>
-                            <button type="button" id="updateProjectBtn"
-                                class="hidden px-6 py-2 bg-green-500 text-white rounded-lg btn-hover hover:bg-green-600">
-                                Actualizar
-                            </button>
-                            <button type="button" id="deleteProjectBtn"
-                                class="hidden px-6 py-2 bg-red-500 text-white rounded-lg btn-hover hover:bg-red-600">
-                                Eliminar
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
-                <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-                    <div class="p-6 border-b border-slate-200">
-                        <h2 class="text-xl font-semibold text-slate-900">Lista de Proyectos</h2>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
-                            <thead class="bg-slate-50">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">ID</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Nombre
+                                    <th class="text-left text-[10px] text-gray-400 font-bold uppercase p-4">ID</th>
+                                    <th class="text-left text-[10px] text-gray-400 font-bold uppercase p-4">Nombre</th>
+                                    <th class="text-left text-[10px] text-gray-400 font-bold uppercase p-4">Detalles
                                     </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">
-                                        Descripción</th>
                                 </tr>
                             </thead>
-                            <tbody id="projectsTableBody" class="divide-y divide-slate-200">
-                                <!-- Projects will be inserted here -->
-                            </tbody>
+                            <tbody id="projectsTableBody" class="divide-y divide-gray-50"></tbody>
                         </table>
                     </div>
                 </div>
-            </div>
 
-            <!-- Search Tab -->
-            <div id="searchTab" class="tab-content hidden">
-                <div class="bg-white rounded-xl shadow-sm p-6 mb-8">
-                    <h2 class="text-xl font-semibold text-slate-900 mb-4">Búsqueda Avanzada</h2>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">Texto</label>
-                            <input type="text" id="searchText" placeholder="Buscar..."
-                                class="w-full px-4 py-2 border border-slate-200 rounded-lg input-glow">
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">Estado</label>
-                            <select id="searchStatus"
-                                class="w-full px-4 py-2 border border-slate-200 rounded-lg input-glow">
-                                <option value="">Todos</option>
+                <!-- Search Tab -->
+                <div id="searchTab" class="tab-content hidden stagger-in">
+                    <div class="section-card">
+                        <div class="section-title">Búsqueda Global</div>
+                        <div class="grid grid-cols-3 gap-4">
+                            <input type="text" id="searchText" placeholder="¿Qué estás buscando?">
+                            <select id="searchStatus">
+                                <option value="">Cualquier estado</option>
                                 <option>Pendiente</option>
                                 <option>En Progreso</option>
                                 <option>Completada</option>
                             </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">Prioridad</label>
-                            <select id="searchPriority"
-                                class="w-full px-4 py-2 border border-slate-200 rounded-lg input-glow">
-                                <option value="">Todas</option>
+                            <select id="searchPriority">
+                                <option value="">Cualquier prioridad</option>
                                 <option>Baja</option>
                                 <option>Media</option>
                                 <option>Alta</option>
-                                <option>Crítica</option>
                             </select>
                         </div>
+                        <button id="searchBtn" class="btn btn-primary mt-4">Buscar resultados</button>
                     </div>
-
-                    <button id="searchBtn"
-                        class="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg btn-hover hover:bg-blue-600">
-                        Buscar
-                    </button>
-                </div>
-
-                <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-                    <div class="p-6 border-b border-slate-200">
-                        <h2 class="text-xl font-semibold text-slate-900">Resultados</h2>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
-                            <thead class="bg-slate-50">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">ID</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Título
-                                    </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Estado
-                                    </th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">
-                                        Prioridad</th>
-                                </tr>
-                            </thead>
-                            <tbody id="searchTableBody" class="divide-y divide-slate-200">
-                                <!-- Search results will be inserted here -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Reports Tab -->
-            <div id="reportsTab" class="tab-content hidden">
-                <div class="bg-white rounded-xl shadow-sm p-6 mb-8">
-                    <h2 class="text-xl font-semibold text-slate-900 mb-4">Generar Reportes</h2>
-
-                    <div class="flex gap-2">
-                        <button onclick="generateReport('tasks')"
-                            class="px-6 py-2 bg-blue-500 text-white rounded-lg btn-hover hover:bg-blue-600">
-                            Reporte de Tareas
-                        </button>
-                        <button onclick="generateReport('projects')"
-                            class="px-6 py-2 bg-blue-500 text-white rounded-lg btn-hover hover:bg-blue-600">
-                            Reporte de Proyectos
-                        </button>
-                        <button onclick="exportCSV()"
-                            class="px-6 py-2 bg-green-500 text-white rounded-lg btn-hover hover:bg-green-600">
-                            Exportar CSV
-                        </button>
+                    <div class="section-card">
+                        <div class="section-title">Resultados</div>
+                        <tbody id="searchTableBody"></tbody>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-xl shadow-sm p-6">
-                    <h2 class="text-xl font-semibold text-slate-900 mb-4">Resultado</h2>
-                    <pre id="reportArea"
-                        class="bg-slate-50 p-4 rounded-lg text-sm text-slate-700 whitespace-pre-wrap min-h-[300px]"></pre>
-                </div>
-            </div>
-
-            <!-- Comments Tab -->
-            <div id="commentsTab" class="tab-content hidden">
-                <div class="bg-white rounded-xl shadow-sm p-6 mb-8">
-                    <h2 class="text-xl font-semibold text-slate-900 mb-4">Comentarios</h2>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">ID de la Tarea</label>
-                            <input type="number" id="commentTaskId"
-                                class="w-full px-4 py-2 border border-slate-200 rounded-lg input-glow">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">Comentario</label>
-                            <input type="text" id="commentText"
-                                class="w-full px-4 py-2 border border-slate-200 rounded-lg input-glow">
+                <!-- Reports Tab -->
+                <div id="reportsTab" class="tab-content hidden stagger-in">
+                    <div class="section-card">
+                        <div class="section-title">Reportes y Exportación</div>
+                        <div class="flex gap-2">
+                            <button onclick="generateReport('tasks')" class="btn btn-secondary text-xs">Informe
+                                Tareas</button>
+                            <button onclick="generateReport('projects')" class="btn btn-secondary text-xs">Informe
+                                Proyectos</button>
+                            <button onclick="exportCSV()" class="btn btn-primary text-xs">Descargar CSV</button>
                         </div>
                     </div>
-
-                    <div class="flex gap-2">
-                        <button id="submitCommentBtn"
-                            class="px-6 py-2 bg-blue-500 text-white rounded-lg btn-hover hover:bg-blue-600">
-                            Subir Comentario
-                        </button>
-                        <button id="loadCommentsBtn"
-                            class="px-6 py-2 bg-green-500 text-white rounded-lg btn-hover hover:bg-green-600">
-                            Cargar Comentarios
-                        </button>
+                    <div class="section-card">
+                        <pre id="reportArea"
+                            class="text-xs text-gray-400 font-mono bg-gray-50 p-6 rounded-lg min-h-[300px]"></pre>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-xl shadow-sm p-6">
-                    <h2 class="text-xl font-semibold text-slate-900 mb-4">Lista de Comentarios</h2>
-                    <div id="commentsArea"
-                        class="bg-slate-50 p-4 rounded-lg text-sm text-slate-700 whitespace-pre-wrap min-h-[300px]">
+                <!-- Comments Tab -->
+                <div id="commentsTab" class="tab-content hidden stagger-in">
+                    <div class="section-card">
+                        <div class="section-title">Añadir Comentario</div>
+                        <div class="grid grid-cols-4 gap-4 mb-4">
+                            <div class="col-span-1">
+                                <label>Tarea ID</label>
+                                <input type="number" id="commentTaskId">
+                            </div>
+                            <div class="col-span-3">
+                                <label>Tu comentario</label>
+                                <input type="text" id="commentText" placeholder="Escribe algo constructivo...">
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button id="submitCommentBtn" class="btn btn-primary">Publicar</button>
+                            <button id="loadCommentsBtn" class="btn btn-secondary">Ver comentarios</button>
+                        </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- History Tab -->
-            <div id="historyTab" class="tab-content hidden">
-                <div class="bg-white rounded-xl shadow-sm p-6 mb-8">
-                    <h2 class="text-xl font-semibold text-slate-900 mb-4">Historial</h2>
-
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-slate-700 mb-2">ID de la Tarea</label>
-                        <input type="number" id="historyTaskId"
-                            class="w-full px-4 py-2 border border-slate-200 rounded-lg input-glow">
-                    </div>
-
-                    <div class="flex gap-2">
-                        <button id="loadTaskHistoryBtn"
-                            class="px-6 py-2 bg-blue-500 text-white rounded-lg btn-hover hover:bg-blue-600">
-                            Cargar Historial de Tarea
-                        </button>
-                        <button id="loadAllHistoryBtn"
-                            class="px-6 py-2 bg-green-500 text-white rounded-lg btn-hover hover:bg-green-600">
-                            Cargar Todo el Historial
-                        </button>
-                    </div>
+                    <div id="commentsArea" class="space-y-4"></div>
                 </div>
 
-                <div class="bg-white rounded-xl shadow-sm p-6">
-                    <h2 class="text-xl font-semibold text-slate-900 mb-4">Historial de Cambios</h2>
-                    <pre id="historyArea"
-                        class="bg-slate-50 p-4 rounded-lg text-sm text-slate-700 whitespace-pre-wrap min-h-[300px]"></pre>
-                </div>
-            </div>
-
-            <!-- Notifications Tab -->
-            <div id="notificationsTab" class="tab-content hidden">
-                <div class="bg-white rounded-xl shadow-sm p-6 mb-8">
-                    <h2 class="text-xl font-semibold text-slate-900 mb-4">Notificaciones</h2>
-
-                    <div class="flex gap-2">
-                        <button id="loadNotificationsBtn"
-                            class="px-6 py-2 bg-blue-500 text-white rounded-lg btn-hover hover:bg-blue-600">
-                            Cargar Notificaciones
-                        </button>
-                        <button id="markNotificationsReadBtn"
-                            class="px-6 py-2 bg-green-500 text-white rounded-lg btn-hover hover:bg-green-600">
-                            Marcar como Leídas
-                        </button>
+                <!-- History Tab -->
+                <div id="historyTab" class="tab-content hidden stagger-in">
+                    <div class="section-card">
+                        <div class="section-title">Historial de Cambios</div>
+                        <div class="flex gap-4 items-end mb-6">
+                            <div class="flex-1">
+                                <label>ID de Tarea</label>
+                                <input type="number" id="historyTaskId" placeholder="O deja vacío para ver todo">
+                            </div>
+                            <button id="loadTaskHistoryBtn" class="btn btn-secondary">Filtrar Tarea</button>
+                            <button id="loadAllHistoryBtn" class="btn btn-primary">Cargar Todo</button>
+                        </div>
+                        <pre id="historyArea"
+                            class="text-xs text-gray-400 font-mono bg-gray-50 p-6 rounded-lg min-h-[300px]"></pre>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-xl shadow-sm p-6">
-                    <h2 class="text-xl font-semibold text-slate-900 mb-4">Lista de Notificaciones</h2>
-                    <div id="notificationsArea" class="bg-slate-50 p-4 rounded-lg text-sm text-slate-700 min-h-[300px]">
+                <!-- Notifications Tab -->
+                <div id="notificationsTab" class="tab-content hidden stagger-in">
+                    <div class="section-card">
+                        <div class="section-title">
+                            <span>Buzón de Notificaciones</span>
+                            <button id="markNotificationsReadBtn"
+                                class="text-xs text-blue-600 font-semibold hover:underline">Marcar todo como
+                                leído</button>
+                        </div>
+                        <div id="notificationsArea" class="space-y-1"></div>
+                        <button id="loadNotificationsBtn" class="btn btn-secondary w-full mt-4">Refrescar</button>
                     </div>
                 </div>
             </div>
-
         </main>
     </div>
 
     <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-white rounded-xl p-6 flex items-center gap-3">
-            <div class="spinner"></div>
-            <span class="text-slate-700">Cargando...</span>
+    <div id="loadingOverlay"
+        class="hidden fixed inset-0 bg-white bg-opacity-80 flex items-center justify-center z-[1000] backdrop-blur-sm">
+        <div class="flex flex-col items-center">
+            <div class="spinner mb-4"></div>
+            <span class="text-xs font-semibold tracking-widest uppercase text-gray-400">Sincronizando...</span>
         </div>
     </div>
 
