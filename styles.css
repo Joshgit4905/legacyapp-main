@@ -95,11 +95,12 @@ aside {
   background: var(--bg);
   display: flex;
   flex-direction: column;
-  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: sticky;
   top: 0;
   height: 100vh;
   z-index: 100;
+  overflow-x: hidden;
 }
 
 aside.collapsed {
@@ -113,6 +114,7 @@ aside.collapsed {
   padding: 0 20px;
   border-bottom: 1px solid var(--accents-2);
   overflow: hidden;
+  white-space: nowrap;
 }
 
 .sidebar-nav {
@@ -140,29 +142,31 @@ aside.collapsed {
   color: var(--fg);
 }
 
-.nav-item.active {
-  background: var(--accents-2);
-  color: var(--fg);
+/* Collapsed States */
+aside.collapsed {
+  width: var(--sidebar-collapsed);
 }
 
-.nav-item svg {
-  width: 20px;
-  height: 20px;
-  margin-right: 12px;
-}
-
-aside.collapsed .nav-item span {
+aside.collapsed .sidebar-header span,
+aside.collapsed .nav-item span,
+aside.collapsed .sidebar-footer .flex-1 {
   display: none;
+}
+
+aside.collapsed .nav-item {
+  justify-content: center;
+  padding: 10px 0;
 }
 
 aside.collapsed .nav-item svg {
   margin-right: 0;
 }
 
-/* User Profile in Sidebar */
+/* Sidebar Footer */
 .sidebar-footer {
   padding: 12px;
   border-top: 1px solid var(--accents-2);
+  margin-top: auto;
 }
 
 /* Main Content */
@@ -178,17 +182,17 @@ main#workspace {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 32px;
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(8px);
+  padding: 0 24px;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(12px);
   position: sticky;
   top: 0;
   z-index: 90;
 }
 
 .content-inner {
-  padding: 32px;
-  max-width: 1200px;
+  padding: 24px;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
@@ -279,6 +283,7 @@ textarea {
 .input-icon-wrapper:has(textarea) {
   align-items: flex-start;
 }
+
 .input-icon-wrapper:has(textarea) .input-icon {
   margin-top: 14px;
 }
@@ -496,15 +501,55 @@ select {
   z-index: 1000;
 }
 
-/* Responsive */
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .board {
+    gap: 16px;
+  }
+}
+
 @media (max-width: 768px) {
   aside {
-    width: 0;
-    overflow: hidden;
+    position: fixed;
+    left: -100%;
+    width: var(--sidebar-width) !important;
+    transition: left 0.3s ease;
+    box-shadow: 20px 0 50px rgba(0, 0, 0, 0.1);
   }
 
   aside.active {
-    width: 240px;
+    left: 0;
+  }
+
+  .app-container {
+    flex-direction: column;
+  }
+
+  #workspace {
+    width: 100%;
+  }
+
+  .header-bar {
+    padding: 0 16px;
+  }
+
+  .content-inner {
+    padding: 16px;
+  }
+
+  .grid-cols-4,
+  .grid-cols-3,
+  .grid-cols-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .board {
+    flex-direction: column;
+    overflow-x: visible;
+  }
+
+  .board-column {
+    min-width: 0;
   }
 }
 
