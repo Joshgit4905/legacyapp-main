@@ -65,6 +65,7 @@ body {
   color: var(--fg);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Auth Pages */
@@ -572,6 +573,8 @@ table {
 
   .header-bar {
     padding: 0 16px;
+    padding-top: env(safe-area-inset-top);
+    height: calc(var(--header-height) + env(safe-area-inset-top));
     z-index: 250;
     /* Stay above sidebar */
   }
@@ -601,6 +604,18 @@ table {
 
   .board-column {
     min-width: 0;
+  }
+
+  /* Prevent iOS Auto-Zoom on inputs */
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+
+  /* Sidebar Safe Area */
+  .sidebar-footer {
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
   }
 }
 
