@@ -790,3 +790,43 @@ if (authToken) {
     document.getElementById('dashboard').classList.remove('hidden');
     loadInitialData();
 }
+
+// Scroll Reveal Animations
+const createScrollObserver = () => {
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('revealed');
+                // Optional: unobserve after revealing
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    // Observe all elements with scroll-reveal class
+    document.querySelectorAll('.scroll-reveal').forEach(el => {
+        observer.observe(el);
+    });
+
+    return observer;
+};
+
+// Initialize scroll reveal when dashboard loads
+let scrollObserver = null;
+
+// Create observer after login
+const originalLoadInitialData = loadInitialData;
+loadInitialData = async function () {
+    await originalLoadInitialData();
+    // Initialize scroll observer after content loads
+    setTimeout(() => {
+        if (!scrollObserver) {
+            scrollObserver = createScrollObserver();
+        }
+    }, 100);
+};
