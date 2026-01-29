@@ -189,6 +189,7 @@ aside.collapsed .nav-item svg {
 .sidebar-footer {
   padding: 12px;
   border-top: 1px solid var(--accents-2);
+  margin-top: auto;
 }
 
 /* Main Content */
@@ -549,6 +550,9 @@ table {
     position: fixed;
     left: 0;
     z-index: 200;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
   }
 
   aside.active {
@@ -568,6 +572,8 @@ table {
 
   .header-bar {
     padding: 0 16px;
+    z-index: 250;
+    /* Stay above sidebar */
   }
 
   .content-inner {
