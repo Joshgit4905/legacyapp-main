@@ -241,27 +241,23 @@ label {
 }
 
 .input-icon-wrapper {
-  position: relative;
   display: flex;
   align-items: center;
+  gap: 12px;
+  position: relative;
 }
 
 .input-icon {
-  position: absolute;
-  left: 12px;
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   color: var(--accents-4);
-  pointer-events: none;
-  transition: all 0.2s;
-}
-
-.input-icon.icon-top {
-  top: 13px;
+  flex-shrink: 0;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .input-icon-wrapper:focus-within .input-icon {
   color: var(--blue);
+  transform: scale(1.1);
 }
 
 input,
@@ -269,8 +265,6 @@ select,
 textarea {
   width: 100%;
   padding: 12px 16px;
-  padding-left: 40px;
-  /* Space for icon */
   border: 1px solid var(--accents-2);
   border-radius: 10px;
   font-size: 14px;
@@ -281,10 +275,12 @@ textarea {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
 }
 
-/* Textarea adjustment for icons */
-textarea {
-  padding-left: 40px;
-  min-height: 100px;
+/* Align icon to top for textareas */
+.input-icon-wrapper:has(textarea) {
+  align-items: flex-start;
+}
+.input-icon-wrapper:has(textarea) .input-icon {
+  margin-top: 14px;
 }
 
 input:hover,
