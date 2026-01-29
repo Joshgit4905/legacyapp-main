@@ -50,19 +50,39 @@ function hideLoading() {
 }
 
 function showError(message) {
-    alert(message);
+    const notification = document.createElement('div');
+    notification.className = 'fixed top-4 right-4 bg-white border-l-4 border-red-500 text-gray-800 px-6 py-4 rounded-xl shadow-2xl z-[2000] flex items-center gap-3 animate-slide-in-right stagger-in';
+    notification.innerHTML = `
+        <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <span class="text-sm font-medium">${message}</span>
+    `;
+    document.body.appendChild(notification);
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        notification.style.transform = 'translateX(20px)';
+        notification.style.transition = 'all 0.3s ease';
+        setTimeout(() => notification.remove(), 300);
+    }, 4000);
 }
 
 function showSuccess(message) {
-    // Simple success notification
     const notification = document.createElement('div');
-    notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg animate-slide-in-right z-50';
-    notification.textContent = message;
+    notification.className = 'fixed top-4 right-4 bg-white border-l-4 border-emerald-500 text-gray-800 px-6 py-4 rounded-xl shadow-2xl z-[2000] flex items-center gap-3 animate-slide-in-right stagger-in';
+    notification.innerHTML = `
+        <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+        <span class="text-sm font-medium">${message}</span>
+    `;
     document.body.appendChild(notification);
-
     setTimeout(() => {
-        notification.remove();
-    }, 3000);
+        notification.style.opacity = '0';
+        notification.style.transform = 'translateX(20px)';
+        notification.style.transition = 'all 0.3s ease';
+        setTimeout(() => notification.remove(), 300);
+    }, 3500);
 }
 
 // Authentication
@@ -846,27 +866,30 @@ async function loadNotifications() {
 
     try {
         const notifications = await apiRequest('/notifications');
-
         const notificationsArea = document.getElementById('notificationsArea');
 
         if (notifications.length === 0) {
-            notificationsArea.innerHTML = '<p class="text-slate-500">No hay notificaciones.</p>';
+            notificationsArea.innerHTML = `
+                <div class="flex flex-col items-center justify-center py-12 text-gray-400">
+                    <svg class="w-12 h-12 mb-3 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                    </svg>
+                    <p class="text-xs font-medium uppercase tracking-widest">Bandeja vacía</p>
+                </div>`;
         } else {
             let html = '';
             notifications.forEach(notification => {
-                const bgColor = notification.read ? 'bg-slate-100' : 'bg-blue-50';
-                const borderColor = notification.read ? 'border-slate-200' : 'border-blue-200';
-                html += `<div class="p-4 mb-2 ${bgColor} border ${borderColor} rounded-lg">`;
-                html += `<div class="flex justify-between items-start">`;
-                html += `<div>`;
-                html += `<p class="font-medium text-slate-900">${notification.message}</p>`;
-                html += `<p class="text-xs text-slate-500 mt-1">${notification.created_at}</p>`;
-                html += `</div>`;
-                if (!notification.read) {
-                    html += `<span class="px-2 py-1 bg-blue-500 text-white text-xs rounded-full">Nueva</span>`;
-                }
-                html += `</div>`;
-                html += `</div>`;
+                const isNew = !notification.read;
+                html += `
+                    <div class="p-5 mb-3 rounded-xl border transition-all duration-300 ${isNew ? 'bg-blue-50/50 border-blue-100 shadow-sm' : 'bg-white border-gray-100 opacity-60'}">
+                        <div class="flex justify-between items-start gap-4">
+                            <div class="flex-1">
+                                <p class="text-sm ${isNew ? 'font-semibold text-gray-900' : 'text-gray-600'} leading-relaxed">${notification.message}</p>
+                                <p class="text-[10px] font-bold text-gray-400 mt-2 uppercase tracking-tighter">${notification.created_at}</p>
+                            </div>
+                            ${isNew ? '<span class="w-2 h-2 bg-blue-500 rounded-full mt-2 pulse-soft"></span>' : ''}
+                        </div>
+                    </div>`;
             });
             notificationsArea.innerHTML = html;
         }
