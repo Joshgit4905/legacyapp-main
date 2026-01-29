@@ -253,7 +253,11 @@ label {
   height: 16px;
   color: var(--accents-4);
   pointer-events: none;
-  transition: color 0.2s;
+  transition: all 0.2s;
+}
+
+.input-icon.icon-top {
+  top: 13px;
 }
 
 .input-icon-wrapper:focus-within .input-icon {
@@ -277,9 +281,10 @@ textarea {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
 }
 
-/* Textarea doesn't need left padding for icon usually, or needs adjustment */
+/* Textarea adjustment for icons */
 textarea {
-  padding-left: 16px;
+  padding-left: 40px;
+  min-height: 100px;
 }
 
 input:hover,
